@@ -87,13 +87,9 @@ print :: proc(var: ^Element, n: int = 0) {
 		#partial switch v.kind {
 		case .Ident:
 			fmt.println("i:", v.text)
-		case .Quote:
-			fmt.println("q:", v.text)
-		case .Backquote:
-			fmt.println("B:", v.text)
 		case .File_Tag:
 			fmt.println("t:", v.text)
-		case .B_Operator_Begin ..< .B_Comparison_End:
+		case .Period, .Comma, .Colon, .Quote, .Backquote, .B_Operator_Begin ..< .B_Comparison_End:
 			fmt.println("o:", v.text)
 		case .Comment:
 			fmt.println("c:", v.text)
@@ -109,6 +105,8 @@ print :: proc(var: ^Element, n: int = 0) {
 			fmt.println("i:", v.text)
 		case .Rune:
 			fmt.println("r:", v.text)
+		case:
+			fmt.println("Unhandled case:", v.kind)
 		}
 	case List:
 		fmt.println("car:")
@@ -187,15 +185,11 @@ parse_any :: proc(psr: ^Parser, loc := #caller_location) -> (^Element, bool) {
 		return nil, false
 	case .Open_Paren:
 		return parse_list(psr)
-	case .Colon:
-		if !expect(psr, .Ident) do return nil, false
-		return parse_literal(psr)
-	case .Period:
-		if !expect(psr, .Ident) do return nil, false
-		return parse_literal(psr)
 	case .B_Literal_Begin ..< .B_Literal_End:
 		fallthrough
-	case .File_Tag, .Comment, .Quote, .Backquote:
+	case .File_Tag, .Comment:
+		fallthrough
+	case .Colon, .Comma, .Period, .Quote, .Backquote:
 		fallthrough
 	case .B_Operator_Begin ..< .B_Comparison_End:
 		fallthrough
@@ -262,7 +256,6 @@ error :: proc(psr: ^Parser, msg: string, args: ..any) {
 }
 
 parse :: proc(line, path: string, err := default_error_handler) -> (result: [dynamic]^Element) {
-	log.debugf("parse(): %v bytes", len(line))
 	tok: tokenizer.Tokenizer
 	tokenizer.init(&tok, line, path)
 	psr := Parser {

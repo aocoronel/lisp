@@ -8,52 +8,39 @@ This contains: ~parser~ and ~tokenizer~.
 
 This project isn't a library. You are supposed to clone this repository and modify it to your needs.
 
-Quick Example:
+Quick example: ~odin run .~
 
-#+BEGIN_SRC odin
-  package example
+#+BEGIN_SRC odin :tangle example.odin
+package example
 
-  import "core:log"
-  import "core:os"
-  import "parser"
+import "core:log"
+import "core:os"
+import "parser"
 
-  lisp_code :: `
-  #!/usr/bin/env something
-  :label
-  .Enum
-  '±'
-  "string"
-  'Quote
-  ,unquote
-  // comment, the backquote won't make Odin happy here
-  ident
-  1
-  1.00
-  ("list" "list2")
-  ("list" . "list2")
-  true false
-  `
+main :: proc() {
+	log.Level_Headers = {
+		0 ..< 10 = "debug: ",
+		10 ..< 20 = "info: ",
+		20 ..< 30 = "warn: ",
+		30 ..< 40 = "error: ",
+		40 ..< 50 = "fatal: ",
+	}
 
-  lisp :: proc() {
-  	log.Level_Headers = {
-  		0 ..< 10 = "debug: ",
-  		10 ..< 20 = "info: ",
-  		20 ..< 30 = "warn: ",
-  		30 ..< 40 = "error: ",
-  		40 ..< 50 = "fatal: ",
-  	}
+	log_opt := log.Options{.Level}
+	if os.is_tty(os.stdin) do log_opt += {.Terminal_Color}
 
-  	log_opt := log.Options{.Level}
-  	if os.is_tty(os.stdin) do log_opt += {.Terminal_Color}
-  	context.logger = log.create_console_logger(opt = log_opt)
-  	defer log.destroy_console_logger(context.logger)
+	context.logger = log.create_console_logger(opt = log_opt)
+	defer log.destroy_console_logger(context.logger)
 
-  	v := parser.parse(string(lisp_code[:]), "lisp.odin")
+	contents, err := os.read_entire_file_from_path("example.lisp", context.temp_allocator)
+	if err != nil do return
 
-  	for e in v {
-  		parser.print(e)
-  	}
-  }
+	elements := parser.parse(string(contents[:]), "example.lisp") // err := default_error_handler
+
+	for e in elements {
+		parser.print(e)
+	}
+}
 #+END_SRC
 
 ** Notes

@@ -1,9 +1,5 @@
 * lisp
 
-#+BEGIN_QUOTE
-This project isn't complete.
-#+END_QUOTE
-
 This contains: ~parser~ and ~tokenizer~.
 
 This project isn't a library. You are supposed to clone this repository and modify it to your needs.
@@ -42,6 +38,10 @@ main :: proc() {
 	}
 }
 #+END_SRC
+
+** Motivation
+
+I find lisp to have the easiest syntax, both to read and to parse. This has the main goal of simplifying writing anything that relates to lisp. Few assumptions are made on purpose, so the user can hack this very easily and expand this to a custom DSL, lisp interpreter or a transpiler.
 
 ** Notes
 

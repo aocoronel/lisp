@@ -1,0 +1,72 @@
+* lisp
+
+#+BEGIN_QUOTE
+This project isn't complete.
+#+END_QUOTE
+
+This contains: ~parser~ and ~tokenizer~.
+
+This project isn't a library. You are supposed to clone this repository and modify it to your needs.
+
+Quick Example:
+
+#+BEGIN_SRC odin
+  package example
+
+  import "core:log"
+  import "core:os"
+  import "parser"
+
+  lisp_code :: `
+  #!/usr/bin/env something
+  :label
+  .Enum
+  '±'
+  "string"
+  'Quote
+  ,unquote
+  // comment, the backquote won't make Odin happy here
+  ident
+  1
+  1.00
+  ("list" "list2")
+  ("list" . "list2")
+  true false
+  `
+
+  lisp :: proc() {
+  	log.Level_Headers = {
+  		0 ..< 10 = "debug: ",
+  		10 ..< 20 = "info: ",
+  		20 ..< 30 = "warn: ",
+  		30 ..< 40 = "error: ",
+  		40 ..< 50 = "fatal: ",
+  	}
+
+  	log_opt := log.Options{.Level}
+  	if os.is_tty(os.stdin) do log_opt += {.Terminal_Color}
+  	context.logger = log.create_console_logger(opt = log_opt)
+  	defer log.destroy_console_logger(context.logger)
+
+  	v := parser.parse(string(lisp_code[:]), "lisp.odin")
+
+  	for e in v {
+  		parser.print(e)
+  	}
+  }
+#+END_SRC
+
+** Notes
+
+This project isn't AI assisted, and I'm not very familiar with Lisp syntax. Expect it to don't follow the same style from other Lisp interpreters like Common Lisp, Clojure, Emacs Lisp or Racket, but many ideas are borrowed.
+
+Some notable tokenizing differences:
+
+| Syntax    | This lisp   | Common Lisp |
+|-----------+-------------+-------------|
+| Character | 'r'         | #\r         |
+| Boolean   | true, false | t, nil      |
+
+** License
+
+zlib license.

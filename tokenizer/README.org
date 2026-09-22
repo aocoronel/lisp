@@ -1,0 +1,20 @@
+* Tokenizer
+
+I'm using a modified version of the Odin tokenizer to lex lisp, because I'm lazy to write one from scratch, and Odin's is very simple to understand.
+
+** Changes
+
+- Added ~Quote~ and modifed ~scan_rune()~ to disambiguate from ~'r'~ and ~'r~.
+- Removed ~scan_raw_string()~ and added ~Backquote~.
+- Removed all odin's keywords, and added ~true~ and ~false~.
+- Formatting using ~odinfmt~.
+- Removed custom keywords.
+- Removed flags.
+- ~error()~ pretty prints with customizable style (Odin or Unix).
+- Added ~is_eof~ to check for ~EOF~ consistently, rather than checking for ~-1~.
+- Simplified ~is_keyword()~, ~is_operator()~
+- Added ~peek_rune()~.
+
+** License
+
+zlib license.

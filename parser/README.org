@@ -1,0 +1,7 @@
+* Parser
+
+An easy to iterate parser for Lisp. Includes nice error printing.
+
+** License
+
+zlib license.

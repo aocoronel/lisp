@@ -263,8 +263,8 @@ skip_whitespace :: proc(t: ^Tokenizer) {
 	}
 }
 
-is_whitespace :: proc(t: ^Tokenizer) -> bool {
-	switch t.ch {
+is_whitespace :: proc(ch: rune) -> bool {
+	switch ch {
 	case ' ', '\t', '\r', '\n':
 		return true
 	case:
@@ -468,7 +468,7 @@ scan_rune :: proc(t: ^Tokenizer) -> (string, Token_Kind) {
 	ch, r: rune = t.ch, ---
 	for {
 		r, c_offset = peek_rune(t, c_offset)
-		if is_eof(ch) {
+		if is_eof(ch) || is_whitespace(ch) {
 			valid = false
 			break
 		}

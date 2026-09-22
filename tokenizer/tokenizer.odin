@@ -176,7 +176,7 @@ default_error_handler :: proc(t: ^Tokenizer, pos: Pos, msg: string, args: ..any)
 	fmt.eprint(t.src[pos.offset + 1:line_end])
 	fmt.eprint("\n")
 
-	padding := (line_length + 2 + 3) + (pos.offset - line_begin)
+	padding := (line_length + 2 + 3) + (pos.offset - line_begin) - 1
 	fmt.eprint(strings.repeat(" ", padding))
 	fmt.eprint(cast(rune)'^')
 	fmt.eprint("\n")
